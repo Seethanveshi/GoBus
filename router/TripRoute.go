@@ -1,0 +1,13 @@
+package router
+
+import (
+	"GoBus/service"
+
+	"github.com/gin-gonic/gin"
+)
+
+func TripRoute(r *gin.Engine) {
+	tripService := service.NewBusService()
+
+	r.GET("/search", tripService.Search)
+}

@@ -3,6 +3,7 @@ package main
 import (
 	"GoBus/config"
 	"GoBus/database"
+	"GoBus/router"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -18,9 +19,11 @@ func main() {
 	cfg := config.LoadConfig()
 	database.Connect(cfg)
 	database.Migrate()
+	database.Seed()
 
 	r := gin.Default()
 
-	r.Run()
+	router.TripRoute(r)
 
+	r.Run()
 }
