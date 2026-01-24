@@ -26,7 +26,7 @@ function SearchResultPage() {
   const fetchTrips = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/search', {
+      const res = await api.get('/trips', {
         params: { source: from, destination: to, date: date },
       });
 

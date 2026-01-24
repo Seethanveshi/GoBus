@@ -9,5 +9,5 @@ import (
 func TripRoute(r *gin.Engine) {
 	tripService := service.NewBusService()
 
-	r.GET("/search", tripService.Search)
+	r.GET("/trips", tripService.Search)
 }

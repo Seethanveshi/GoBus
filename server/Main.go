@@ -34,6 +34,8 @@ func main() {
 	}))
 
 	router.TripRoute(r)
+	router.SeatRoute(r)
+	router.BookingRouter(r)
 
 	r.Run()
 }
