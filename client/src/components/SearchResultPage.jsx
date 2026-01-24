@@ -1,28 +1,48 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SearchForm from './searchForm/SearchForm'
 import api from '../api/axios'
 import Header from './Header'
 import BusList from './bus/BusList'
 import '../styles/SearchForm.css'
+import { useNavigate, useSearchParams } from 'react-router'
 
 function SearchResultPage() {
   
-  const [trips, setTrips] = React.useState(null)
+  const [trips, setTrips] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
-  const searchHandler = async ({from, to, date}) => {
-    const res = await api.get("/search", {params: {source: from, destination: to, date: date}});
-    if (res.data != null){
-      setTrips(res.data);
+  const from = searchParams.get('source') || '';
+  const to = searchParams.get('destination') || '';
+  const date = searchParams.get('date') || '';
+
+  useEffect(() => {
+    if (from && to && date) {
+      fetchTrips();
     }
-    else {
-      setTrips([])
+  }, [from, to, date]);
+
+  const fetchTrips = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get('/search', {
+        params: { source: from, destination: to, date: date },
+      });
+
+      setTrips(res.data || []);
+    } catch (err) {
+      console.error(err);
+      setTrips([]);
+    } finally {
+      setTimeout(() => setLoading(false), 1000);
     }
-  }
+  };
+
   return (
     <div className='search-result-page'>
-        <Header />
-        <SearchForm onSearch={searchHandler}/>
-        <BusList trips={trips}/>
+        <SearchForm />
+        <BusList trips={trips} loading={loading} />
     </div>
   )
 }

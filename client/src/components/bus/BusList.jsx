@@ -2,11 +2,15 @@ import React from 'react';
 import BusCard from './BusCard';
 import '../../styles/Bus.css';
 
-function BusList({ trips }) {
+function BusList({ trips, loading }) {
   return (
     <div className="bus-list-container">
       {
-        trips == null ? (
+        loading == true ? (
+          <div className="list-header">
+            <span>Loading. . .</span>
+          </div>
+        ) : trips == null ? (
           <div className="list-header">
             <span>Search for buses to see available trips.</span>
           </div>

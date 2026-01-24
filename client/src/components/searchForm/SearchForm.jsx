@@ -2,16 +2,29 @@ import React, { useState } from 'react';
 import CityInputBox from './CityInputBox';
 import DateInputBox from './DateInputBox';
 import "../../styles/SearchForm.css";
+import { useNavigate, useSearchParams } from 'react-router';
 
-function SearchForm({ onSearch }) {
-  const [from, setFrom] = useState("Kakinada");
-  const [to, setTo] = useState("Hyderabed");
-  const [date, setDate] = useState("2026-01-23");
+
+function SearchForm() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams()
+
+  const initialFrom = searchParams.get('source') || 'Kakinada';
+  const initialTo = searchParams.get('destination') || 'Hyderabed';
+  const initialDate = searchParams.get('date') || new Date().toISOString().split('T')[0];
+
+  const [from, setFrom] = useState(initialFrom);
+  const [to, setTo] = useState(initialTo);
+  const [date, setDate] = useState(initialDate);
 
   const swapCities = () => {
     setFrom(to);
     setTo(from);
   };
+
+  const searchHandler = () => {
+      navigate(`/search?source=${from}&destination=${to}&date=${date}`);
+  }
 
   return (
     <div className="search-form-wrapper">
@@ -35,7 +48,7 @@ function SearchForm({ onSearch }) {
           <DateInputBox value={date} onChange={setDate} />
         </div>
 
-        <button className="search-submit-btn" onClick={() => onSearch({ from, to, date })}>
+        <button className="search-submit-btn" onClick={() => searchHandler()}>
           SEARCH
         </button>
       </div>
