@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"GoBus/database"
-	"GoBus/model"
+	"GoBus/server/database"
+	"GoBus/server/model"
 	"time"
 )
 

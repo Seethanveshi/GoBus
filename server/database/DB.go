@@ -1,10 +1,11 @@
 package database
 
 import (
-	"GoBus/config"
-	"GoBus/model"
 	"fmt"
 	"log"
+
+	"GoBus/server/config"
+	"GoBus/server/model"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

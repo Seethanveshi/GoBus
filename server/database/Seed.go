@@ -1,7 +1,7 @@
 package database
 
 import (
-	"GoBus/model"
+	"GoBus/server/model"
 	"strconv"
 	"time"
 )

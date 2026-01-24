@@ -1,0 +1,88 @@
+.bus-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  padding: 0 15px;
+  min-width: 700px;
+}
+
+.list-header {
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #4a4a4a;
+}
+
+.bus-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  padding: 20px;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.bus-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.bus-details {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Bus Info Section */
+.bus-info { flex: 2; }
+.bus-name { font-size: 16px; margin: 0; color: #1b1b1b; }
+.bus-type { font-size: 13px; color: #7e7e7e; margin: 4px 0; }
+
+.bus-tags { display: flex; gap: 8px; margin-top: 10px; }
+.tag {
+  background: #eaf2ff;
+  color: #4a90e2;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Rating Badge */
+.rating-badge {
+  background: #38b87c;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.rating-count { font-size: 11px; color: #7e7e7e; text-align: center; margin-top: 4px; }
+
+/* Time Section */
+.time-column { flex: 1.5; text-align: center; }
+.time-main { font-size: 18px; font-weight: 700; color: #1b1b1b; }
+.time-sep { margin: 0 8px; color: #d1d1d1; }
+.duration-text { font-size: 12px; color: #7e7e7e; margin-top: 5px; }
+
+/* Price Section */
+.price-column { flex: 1; text-align: right; padding-right: 20px; }
+.price-label { font-size: 11px; color: #7e7e7e; margin: 0; }
+.price-value { font-size: 18px; font-weight: 700; color: #1b1b1b; margin: 0; }
+
+/* Button */
+.view-seats-btn {
+  background-color: #d84e55;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 13px;
+}

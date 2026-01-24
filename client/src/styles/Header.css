@@ -1,0 +1,98 @@
+.main-header {
+  display: flex;
+  position: fixed;
+  top: 0;
+  z-index: 11;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  height: 80px;
+  width: 100%;
+  align-items: center;
+  font-family: 'Montserrat', sans-serif;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+.header-container {
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.logo img {
+  height: 48px;
+  cursor: pointer;
+  border-radius:5px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 30px;
+  height: 80px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 15px;
+  position: relative;
+}
+
+.nav-item span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #3e3e3e;
+  margin-top: 5px;
+}
+
+.nav-item.active span {
+  color: #d84e55;
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #d84e55;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.right-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #3e3e3e;
+  font-size: 14px;
+}
+
+.right-item:hover {
+  color: #d84e55;
+}
+
+.icon-bookings, .icon-help, .icon-account {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+}
+
+.nav-icon{
+  height: 24px;
+}

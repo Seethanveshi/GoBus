@@ -1,8 +1,8 @@
 package service
 
 import (
-	"GoBus/dto"
-	"GoBus/repository"
+	"GoBus/server/dto"
+	"GoBus/server/repository"
 	"net/http"
 	"time"
 

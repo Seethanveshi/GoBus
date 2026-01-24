@@ -1,7 +1,7 @@
 package router
 
 import (
-	"GoBus/service"
+	"GoBus/server/service"
 
 	"github.com/gin-gonic/gin"
 )
