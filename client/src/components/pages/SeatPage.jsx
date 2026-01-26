@@ -2,47 +2,30 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "../../api/axios"
 import SeatLayout from "../../components/seat/SeatLayout"
+import { useSelector, useDispatch } from "react-redux";
+import { fetchSeats, bookSeats, toggleSeat } from "../../store/SeatSlice";
 
 export default function SeatPage() {
   const { tripId } = useParams();
-  const [seats, setSeats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedSeats, setSelectedSeats] = useState([]);
+  const dispatch = useDispatch();
 
-  const loadSeats = async () => {
-    setLoading(true);
-    const res = await api.get(`/trips/${tripId}/seats`);
-    setSeats(res.data);
-    setLoading(false);
-  };
+  const {seats, selectedSeats, loading} = useSelector((state) => state.seats)
 
   useEffect(() => {
-    loadSeats();
-  }, [tripId]);
+    dispatch(fetchSeats(tripId))
+  }, [tripId, dispatch]);
 
-  const toggleSeat = (seat) => {
-    if (!seat.available) return;
-
-    setSelectedSeats((prev) =>
-      prev.some((s) => s.seat_id === seat.seat_id)
-        ? prev.filter((s) => s.seat_id !== seat.seat_id)
-        : [...prev, seat]
-    );
-  };
-
-  const bookSeats = async () => {
+  const handleBook = async () => {
     if (selectedSeats.length === 0) {
       alert("Select at least one seat");
       return;
     }
 
-    await api.post(`/trips/${tripId}/bookings`, {
-      seatIds: selectedSeats.map((s) => s.seat_id),
-    });
-
-    alert("Seats booked successfully 🎉");
-    setSelectedSeats([]);
-    loadSeats(); 
+    dispatch(
+      bookSeats({tripId, seatIds: selectedSeats.map((s) => s.seat_id)})
+      ).then(() => {
+        dispatch(fetchSeats(tripId));
+      });
   };
 
   if (loading) return <p>Loading seats...</p>;
@@ -54,11 +37,11 @@ export default function SeatPage() {
       <SeatLayout
         seats={seats}
         selectedSeats={selectedSeats}
-        onSeatClick={toggleSeat}
+        onSeatClick={(seat) => dispatch(toggleSeat(seat))}
       />
 
       <button
-        onClick={bookSeats}
+        onClick={handleBook}
         style={{
           marginTop: 20,
           background: "#d84e55",

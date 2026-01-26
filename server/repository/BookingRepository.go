@@ -39,10 +39,6 @@ func (r *BookingRepository) CreateBooking(tripID string, seatIDs []uint) (*model
 		}
 
 		for _, seatID := range seatIDs {
-			if err != nil {
-				return err
-			}
-
 			database.DB.Create(&model.BookingSeat{
 				BookingID: booking.ID,
 				SeatID:    seatID,
