@@ -23,7 +23,7 @@ function SearchForm() {
   };
 
   const searchHandler = () => {
-      navigate(`/search?source=${from}&destination=${to}&date=${date}`);
+      navigate(`/trips?source=${from}&destination=${to}&date=${date}`);
   }
 
   return (

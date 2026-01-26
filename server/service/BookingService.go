@@ -17,7 +17,7 @@ func NewBookingService() *BookingService {
 }
 
 type BookSeatsRequest struct {
-	SeatIDs []string `json:"seatIds"`
+	SeatIDs []uint `json:"seatIds"`
 }
 
 func (s BookingService) BookSeats(c *gin.Context) {

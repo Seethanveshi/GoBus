@@ -11,7 +11,7 @@ import (
 
 type BookingRepository struct{}
 
-func (r *BookingRepository) CreateBooking(tripID string, seatIDs []string) (*model.Booking, error) {
+func (r *BookingRepository) CreateBooking(tripID string, seatIDs []uint) (*model.Booking, error) {
 	returnBooking := &model.Booking{}
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
@@ -39,14 +39,13 @@ func (r *BookingRepository) CreateBooking(tripID string, seatIDs []string) (*mod
 		}
 
 		for _, seatID := range seatIDs {
-			value, err := strconv.ParseUint(seatID, 10, 64)
 			if err != nil {
 				return err
 			}
 
 			database.DB.Create(&model.BookingSeat{
 				BookingID: booking.ID,
-				SeatID:    uint(value),
+				SeatID:    seatID,
 			})
 		}
 

@@ -1,8 +1,10 @@
 import React from 'react';
 import '../../styles/Bus.css'
 // import { Star } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 function BusCard ({ trip }) {
+  const navigate = useNavigate()
 
   const formatTime = (dateStr) => {
     const date = new Date(dateStr);
@@ -15,6 +17,11 @@ function BusCard ({ trip }) {
     const mins = Math.floor((diff / (1000 * 60)) % 60);
     return `${hours}h ${mins}m`;
   };
+
+
+  const navigateToSeatPage = () =>{
+    navigate(`/trips/${trip.trip_id}/seats`)
+  }
 
   return (
     <div className="bus-card">
@@ -43,7 +50,7 @@ function BusCard ({ trip }) {
         </div>
 
         <div className="action-column">
-          <button className="view-seats-btn">View Seats</button>
+          <button onClick={() => navigateToSeatPage()} className="view-seats-btn">View Seats</button>
         </div>
       </div>
     </div>

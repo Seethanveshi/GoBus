@@ -4,12 +4,14 @@ import { createBrowserRouter, createRoutesFromElements, Route, Router, RouterPro
 import MainLayout from './MainLayout.jsx'
 import SearchResultPage from './components/SearchResultPage.jsx'
 import SearchForm from './components/searchForm/SearchForm.jsx'
+import SeatPage from './components/pages/SeatPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<MainLayout /> }>
         <Route path='' element={<SearchForm />} />
-        <Route path='/search' element={<SearchResultPage />} />
+        <Route path='/trips' element={<SearchResultPage />} />
+        <Route path='/trips/:tripId/seats' element={<SeatPage />} />
     </Route>
   )
 )
