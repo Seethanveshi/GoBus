@@ -1,6 +1,7 @@
 import React from 'react';
 import '../styles/Header.css';
 import { Menu, X, HelpCircle, User } from "lucide-react";
+import { NavLink } from 'react-router';
 
 function Header() {
   return (
@@ -41,7 +42,7 @@ function Header() {
             <i className="icon-bookings">
                 <Menu />
             </i>
-            <span>Bookings</span>
+            <NavLink to={"/bookings/history"}>Bookings</NavLink>
           </div>
           <div className="right-item">
             <i className="icon-help">

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import SeatLayout from "../../components/seat/SeatLayout"
 import { useSelector, useDispatch } from "react-redux";
 import { clearSelectedSeats, fetchSeats, toggleSeat } from "../../store/SeatSlice";
+import "../../styles/Seat.css"
 
 export default function SeatPage() {
   const { tripId } = useParams();
@@ -28,7 +29,7 @@ export default function SeatPage() {
   if (loading) return <p>Loading seats...</p>;
 
   return (
-    <div style={{ padding: 24 }}>
+    <div className="seat-layout">
       <h2>Select Seats</h2>
 
       <SeatLayout
