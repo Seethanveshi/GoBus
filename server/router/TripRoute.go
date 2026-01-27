@@ -10,4 +10,5 @@ func TripRoute(r *gin.Engine) {
 	tripService := service.NewBusService()
 
 	r.GET("/trips", tripService.Search)
+	r.GET("/trips/:tripID", tripService.GetTripById)
 }

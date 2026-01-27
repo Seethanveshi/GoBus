@@ -21,3 +21,15 @@ func (r *TripRepository) Search(source string, destination string, date time.Tim
 
 	return trips, err
 }
+
+func (r *TripRepository) GetTripById(tripID uint) (model.Trip, error) {
+	var trip model.Trip
+
+	err := database.DB.Preload("Bus").Preload("Route").
+		Joins("JOIN routes on routes.id = trips.route_id").
+		Where("trips.id = ?", tripID).
+		First(&trip).Error
+
+	return trip, err
+
+}

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import api from "../../api/axios"
+import { useNavigate, useParams } from "react-router-dom";
 import SeatLayout from "../../components/seat/SeatLayout"
 import { useSelector, useDispatch } from "react-redux";
-import { fetchSeats, bookSeats, toggleSeat } from "../../store/SeatSlice";
+import { clearSelectedSeats, fetchSeats, toggleSeat } from "../../store/SeatSlice";
 
 export default function SeatPage() {
   const { tripId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {seats, selectedSeats, loading} = useSelector((state) => state.seats)
 
   useEffect(() => {
     dispatch(fetchSeats(tripId))
+    dispatch(clearSelectedSeats())
   }, [tripId, dispatch]);
 
   const handleBook = async () => {
@@ -21,11 +22,7 @@ export default function SeatPage() {
       return;
     }
 
-    dispatch(
-      bookSeats({tripId, seatIds: selectedSeats.map((s) => s.seat_id)})
-      ).then(() => {
-        dispatch(fetchSeats(tripId));
-      });
+    navigate(`/trips/${tripId}/booking`);
   };
 
   if (loading) return <p>Loading seats...</p>;

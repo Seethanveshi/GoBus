@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import Seat from "./Seat"
 
 function SeatLayout({seats, selectedSeats, onSeatClick}) {

@@ -2,9 +2,13 @@ import React from 'react';
 import '../../styles/Bus.css'
 // import { Star } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import api from '../../api/axios';
+import { useDispatch } from 'react-redux';
+import { tripDetails } from '../../store/TripSlice';
 
 function BusCard ({ trip }) {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const formatTime = (dateStr) => {
     const date = new Date(dateStr);
@@ -19,7 +23,11 @@ function BusCard ({ trip }) {
   };
 
 
-  const navigateToSeatPage = () =>{
+  const navigateToSeatPage = async() =>{
+    const res = await api.get(`trips/${trip.trip_id}`)
+    dispatch(tripDetails(res.data))
+    console.log(res.data)
+
     navigate(`/trips/${trip.trip_id}/seats`)
   }
 

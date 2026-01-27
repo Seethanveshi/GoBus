@@ -1,0 +1,117 @@
+/* General Layout */
+.booking-layout {
+  display: flex;
+  max-width: 1100px;
+  margin: 100px auto;
+  gap: 25px;
+  padding: 0 20px;
+  background-color: #f7f7f7;
+  align-items: flex-start;
+}
+
+.booking-layout .left {
+  flex: 2;
+}
+
+.booking-layout .right {
+  flex: 1;
+  position: sticky;
+  top: 20px;
+}
+
+/* Section Cards */
+.booking-section-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.booking-section-card h2, 
+.booking-section-card h3 {
+  margin-top: 0;
+  color: #1c1c1c;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* Traveller Seat Boxes */
+.seat-form-row {
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.seat-form-row h4 {
+  margin: 0;
+  color: #7e7e7e;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.booking-input, 
+.booking-select {
+  padding: 12px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.booking-input:focus {
+  border-color: #d84e55;
+}
+
+.contact-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.summary-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #d84e55;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  color: #4a4a4a;
+}
+
+.total-row {
+  border-top: 1px dashed #ccc;
+  padding-top: 15px;
+  margin-top: 15px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+.confirm-btn {
+  width: 100%;
+  background: #d84e55;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s;
+}
+
+.confirm-btn:hover {
+  background: #b23d43;
+}

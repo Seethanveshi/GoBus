@@ -5,9 +5,14 @@ function Seat({ seat, isSelected, onClick }) {
   if (seat.available) bg = "#4caf50"; 
   if (isSelected) bg = "#2196f3"; 
 
+  const handleClick = () => {
+    if (!seat.available) return
+    onClick()
+  }
+
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       style={{
         width: 45,
         height: 45,

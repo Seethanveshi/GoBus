@@ -9,15 +9,6 @@ export const fetchSeats = createAsyncThunk(
     }
 )
 
-export const bookSeats = createAsyncThunk(
-    "seats/bookSeats",
-    async({tripId, seatIds}) => {
-        await api.post(`trips/${tripId}/bookings`, {seatIds: seatIds})
-        return seatIds
-    }
-)
-
-
 const seatSlice = createSlice({
     name: "seatSlice",
     initialState : {
@@ -42,7 +33,7 @@ const seatSlice = createSlice({
                 state.selectedSeats.push(seat)
             }
         },
-        clearSelectedSeats(){
+        clearSelectedSeats(state){
             state.selectedSeats = [];
         },
     },
@@ -58,9 +49,6 @@ const seatSlice = createSlice({
             .addCase(fetchSeats.rejected, (state, action) => {
                 state.loading = false
                 state.error = action.error.message;
-            })
-            .addCase(bookSeats.fulfilled, (state) => {
-                state.selectedSeats = [];
             })
     },
 });

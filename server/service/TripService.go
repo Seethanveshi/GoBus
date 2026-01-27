@@ -4,6 +4,7 @@ import (
 	"GoBus/server/dto"
 	"GoBus/server/repository"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -67,4 +68,43 @@ func (s *TripService) Search(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, tripDtos)
+}
+
+func (s *TripService) GetTripById(c *gin.Context) {
+	tripID := c.Param("tripID")
+
+	value, _ := strconv.ParseUint(tripID, 10, 64)
+
+	tripDetails, err := s.tripRepository.GetTripById(uint(value))
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	busDto := dto.BusDto{
+		BusID:      tripDetails.BusID,
+		BusName:    tripDetails.Bus.BusName,
+		BusNumber:  tripDetails.Bus.BusNumber,
+		BusType:    tripDetails.Bus.BusType,
+		TotalSeats: tripDetails.Bus.TotalSeats,
+	}
+
+	routeDto := dto.RouteDto{
+		RouteID:     tripDetails.RouteID,
+		Source:      tripDetails.Route.Source,
+		Destination: tripDetails.Route.Destination,
+	}
+
+	tripDto := dto.TripDto{
+		TripID:        tripDetails.ID,
+		Bus:           busDto,
+		Route:         routeDto,
+		TravelDate:    tripDetails.TravelDate,
+		ArrivalTime:   tripDetails.ArrivalTime,
+		DepartureTime: tripDetails.DepartureTime,
+		Price:         tripDetails.Price,
+	}
+
+	c.JSON(http.StatusOK, tripDto)
 }
