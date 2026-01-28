@@ -7,7 +7,7 @@ function CityInputBox({ label, value, onChange }) {
       {/* <BusFront className="input-icon" size={24} /> */}
       <div className="text-fields">
         <label>{label}</label>
-        <input 
+        <input className='city-input-field'
           type="text" 
           value={value} 
           onChange={(e) => onChange(e.target.value)} 

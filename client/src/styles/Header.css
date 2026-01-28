@@ -72,6 +72,7 @@ img {
   display: flex;
   align-items: center;
   gap: 25px;
+  height: 80px;
 }
 
 .right-item {
@@ -81,11 +82,12 @@ img {
   cursor: pointer;
   color: #3e3e3e;
   font-size: 14px;
+  height: 80px;
 }
 
-.right-item:hover {
+/* .right-item:hover {
   color: #d84e55;
-}
+} */
 
 .icon-bookings, .icon-help, .icon-account {
   width: 24px;
@@ -95,4 +97,68 @@ img {
 
 .nav-icon{
   height: 24px;
+}
+
+/* Auth Buttons styling when logged out */
+.auth-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-btn {
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.auth-btn:hover {
+  color: #d84e55;
+}
+
+.auth-divider {
+  color: #ccc;
+  font-size: 12px;
+  cursor: default;
+}
+
+/* User styling when logged in */
+.user-logged-in {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #1c1c1c;
+  font-size: 14px;
+}
+
+.logout-link-btn {
+  background: none;
+  border: none;
+  color: #d84e55;
+  font-size: 11px;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.logout-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* Icons */
+.arrow-icon {
+  margin-left: 4px;
+  color: #7e7e7e;
+}
+
+/* Remove default link styles for NavLink */
+a {
+  text-decoration: none;
+  color: inherit;
 }

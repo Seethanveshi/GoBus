@@ -37,5 +37,6 @@ func Migrate() {
 		&model.Trip{},
 		&model.Booking{},
 		&model.BookingSeat{},
+		&model.User{},
 	)
 }

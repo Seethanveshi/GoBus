@@ -23,7 +23,7 @@ export default function SeatPage() {
       return;
     }
 
-    navigate(`/trips/${tripId}/booking`);
+    navigate(`/trips/${tripId}/bookingdetails`);
   };
 
   if (loading) return <p>Loading seats...</p>;

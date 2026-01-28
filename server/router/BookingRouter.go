@@ -1,6 +1,7 @@
 package router
 
 import (
+	"GoBus/server/middleware"
 	"GoBus/server/service"
 
 	"github.com/gin-gonic/gin"
@@ -8,7 +9,9 @@ import (
 
 func BookingRouter(r *gin.Engine) {
 	bookingService := service.NewBookingService()
+	secured := r.Group("/")
+	secured.Use(middleware.AuthRequired())
 
-	r.POST("/trips/:tripID/bookings", bookingService.BookSeats)
-	r.GET("/bookings/history", bookingService.GetBookingHistory)
+	secured.POST("/trips/:tripID/bookings", bookingService.BookSeats)
+	secured.GET("/bookings/history", bookingService.GetBookingHistory)
 }

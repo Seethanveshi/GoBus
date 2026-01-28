@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import SearchForm from './searchForm/SearchForm'
 import api from '../api/axios'
-import Header from './Header'
 import BusList from './bus/BusList'
 import '../styles/SearchForm.css'
 import { useNavigate, useSearchParams } from 'react-router'

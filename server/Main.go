@@ -33,6 +33,7 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
+	router.AuthRouter(r)
 	router.TripRoute(r)
 	router.SeatRoute(r)
 	router.BookingRouter(r)

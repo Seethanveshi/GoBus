@@ -143,7 +143,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 }
 
-input[type="text"] {
+.city-input-field {
   border: none;
   font-size: 18px;
   font-weight: 700;

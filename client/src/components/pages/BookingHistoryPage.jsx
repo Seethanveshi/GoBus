@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react'
 import api from '../../api/axios'
 import BookingHistoryCard from '../booking/BookingHistoryCard'
 import "../../styles/BookingHistory.css"
+import { useSelector } from 'react-redux'
 
 function BookingHistoryPage() {
     const [bookings, setBookings] = useState([])
     const [loading, setLoading] = useState(true)
+    const user = useSelector((state) => state.auth.user)
 
     useEffect(() => {
         const fetchBookingHistory = async() => {
             try {
-                const res = await api.get("bookings/history")
+                const res = await api.get(`bookings/history`)
                 setBookings(res.data)
             } catch (err) {
                 console.error(err)
