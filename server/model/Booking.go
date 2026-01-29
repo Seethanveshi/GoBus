@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Booking struct {
 	gorm.Model
+	UserID      uint   `gorm:"not null"`
 	TripID      uint   `gorm:"not null"`
 	Phone       string `gorm:"not null"`
 	Email       string `gorm:"not null"`

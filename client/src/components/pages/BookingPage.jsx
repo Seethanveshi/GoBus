@@ -66,13 +66,22 @@ function BookingPage() {
             contact: contactDetails,
             total_amount: totalAmount
         };
-
-        await api.post(`/trips/${tripId}/bookings`, payload);
-        dispatch(clearSelectedSeats())
-        
-
-        alert("Booking confirmed 🎉");
-        navigate("/");
+    
+        try {
+            await api.post(`/trips/${tripId}/bookings`, payload);
+            dispatch(clearSelectedSeats())
+            
+            alert("Booking confirmed 🎉");
+            navigate("/");
+        } 
+        catch (err) {
+            if (err.response) {
+                alert(err.response.data.error);
+            } 
+            else {
+                alert("Server unreachable");
+            }
+        }
     };
 
     return (

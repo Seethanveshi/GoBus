@@ -4,6 +4,7 @@ import SeatLayout from "../../components/seat/SeatLayout"
 import { useSelector, useDispatch } from "react-redux";
 import { clearSelectedSeats, fetchSeats, toggleSeat } from "../../store/SeatSlice";
 import "../../styles/Seat.css"
+import api from "../../api/axios";
 
 export default function SeatPage() {
   const { tripId } = useParams();
@@ -23,7 +24,16 @@ export default function SeatPage() {
       return;
     }
 
-    navigate(`/trips/${tripId}/bookingdetails`);
+    try {
+      const seatIds = selectedSeats.map(s => s.seat_id)
+      const res = await api.post(`/trips/${tripId}/seats/lock`, {
+                                                                  seat_ids: seatIds,
+                                                                }
+                                )
+      navigate(`/trips/${tripId}/bookingdetails`);
+    } catch (error) {
+      alert(error.response?.data?.error || "One or more selected seats are no longer available");
+    }   
   };
 
   if (loading) return <p>Loading seats...</p>;

@@ -22,6 +22,7 @@ func main() {
 	database.Connect(cfg)
 	database.Migrate()
 	database.Seed()
+	database.ConnectRedis()
 
 	r := gin.Default()
 

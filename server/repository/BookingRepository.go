@@ -12,13 +12,14 @@ import (
 
 type BookingRepository struct{}
 
-func (r *BookingRepository) CreateBooking(tripID uint, request dto.BookSeatsRequest) (*model.Booking, error) {
+func (r *BookingRepository) CreateBooking(tripID uint, userID uint, request dto.BookSeatsRequest) (*model.Booking, error) {
 	returnBooking := &model.Booking{}
 
 	err := database.DB.Transaction(func(tx *gorm.DB) error {
 
 		booking := model.Booking{
 			TripID:      tripID,
+			UserID:      userID,
 			Phone:       request.Contact.Phone,
 			Email:       request.Contact.Email,
 			TotalAmount: request.TotalAmount,
@@ -65,7 +66,7 @@ func (r *BookingRepository) CreateBooking(tripID uint, request dto.BookSeatsRequ
 	return returnBooking, err
 }
 
-func (r *BookingRepository) GetBookingHistory() ([]dto.BookingHistoryResponse, error) {
+func (r *BookingRepository) GetBookingHistory(userID uint) ([]dto.BookingHistoryResponse, error) {
 	var results []dto.BookingHistoryResponse
 
 	rows, err := database.DB.Raw(`
@@ -86,8 +87,9 @@ func (r *BookingRepository) GetBookingHistory() ([]dto.BookingHistoryResponse, e
 		JOIN trips t ON t.id = b.trip_id
 		JOIN routes r ON r.id = t.route_id
 		JOIN buses bus ON bus.id = t.bus_id
+		WHERE b.user_id = ?
 		ORDER BY b.created_at DESC
-	`).Rows()
+	`, userID).Rows()
 
 	if err != nil {
 		return nil, err
@@ -126,4 +128,3 @@ func (r *BookingRepository) GetBookingHistory() ([]dto.BookingHistoryResponse, e
 
 	return results, nil
 }
-
