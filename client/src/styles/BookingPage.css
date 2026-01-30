@@ -115,3 +115,38 @@
 .confirm-btn:hover {
   background: #b23d43;
 }
+
+.lock-timer-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+.timer-pill-container {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px; /* Matches your image's rounded corners */
+    padding: 2px 12px 2px 4px;
+    gap: 4px;
+    width: fit-content;
+}
+
+.timer-svg-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-text {
+    font-size: 18px;
+    font-weight: 700;
+    color: #3e3e3e;
+    font-family: sans-serif;
+}
+
+/* Smooth transition for the progress ring */
+circle {
+    transition: stroke-dashoffset 1s linear;
+}

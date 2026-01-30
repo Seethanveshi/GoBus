@@ -8,7 +8,7 @@ import (
 )
 
 func BookingRouter(r *gin.Engine) {
-	bookingService := service.NewBookingService()
+	bookingService := service.NewBookingService(&service.SeatLockService{})
 	secured := r.Group("/")
 	secured.Use(middleware.AuthRequired())
 

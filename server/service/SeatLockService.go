@@ -71,6 +71,54 @@ func (s *SeatLockService) LockSeatsRequest(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message":    "seats locked",
-		"expires_in": 300,
+		"expires_in": 20,
 	})
+}
+
+func (s *SeatLockService) VerifySeatLock(
+	tripID uint,
+	seatID uint,
+	userID uint,
+) error {
+	key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
+
+	val, err := database.RedisClient.Get(database.Ctx, key).Result()
+	if err != nil {
+		return fmt.Errorf("seat lock expired")
+	}
+
+	if val != strconv.Itoa(int(userID)) {
+		return fmt.Errorf("seat lock owned by another user")
+	}
+
+	return nil
+}
+
+func (s *SeatLockService) UnlockSeat(tripID, seatID uint) {
+	key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
+	database.RedisClient.Del(database.Ctx, key)
+}
+
+func (s *SeatLockService) UnlockSeats(c *gin.Context) {
+	userID := c.MustGet("user_id").(uint)
+	tripID, _ := strconv.ParseUint(c.Param("tripID"), 10, 64)
+
+	var req struct {
+		SeatIDs []uint `json:"seat_ids"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+
+	for _, seatID := range req.SeatIDs {
+		key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
+		val, err := database.RedisClient.Get(database.Ctx, key).Result()
+		if err == nil && val == strconv.Itoa(int(userID)) {
+			s.UnlockSeat(uint(tripID), seatID)
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "seats unlocked"})
 }

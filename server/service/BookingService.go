@@ -1,24 +1,23 @@
 package service
 
 import (
-	"GoBus/server/database"
 	"GoBus/server/dto"
 	"GoBus/server/repository"
-	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/redis/go-redis/v9"
 )
 
 type BookingService struct {
 	bookingRepository *repository.BookingRepository
+	seatLockService   *SeatLockService
 }
 
-func NewBookingService() *BookingService {
+func NewBookingService(seatLockService *SeatLockService) *BookingService {
 	return &BookingService{
 		bookingRepository: &repository.BookingRepository{},
+		seatLockService:   seatLockService,
 	}
 }
 
@@ -35,20 +34,15 @@ func (s BookingService) BookSeats(c *gin.Context) {
 	value, _ := strconv.ParseUint(tripID, 10, 64)
 
 	for _, seatID := range bookSeatsRequest.SeatIDs {
-		key := fmt.Sprintf("seat_lock:%d:%d", value, seatID)
-
-		val, err := database.RedisClient.Get(database.Ctx, key).Result()
-
-		if err == redis.Nil {
-			c.JSON(http.StatusConflict, gin.H{"error": "seat lock expired"})
-			return
-		}
+		err := s.seatLockService.VerifySeatLock(
+			uint(value),
+			seatID,
+			userID,
+		)
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "redis error"})
-			return
-		}
-		if val != strconv.Itoa(int(userID)) {
-			c.JSON(http.StatusForbidden, gin.H{"error": "seat locked by another user"})
+			c.JSON(http.StatusConflict, gin.H{
+				"error": err.Error(),
+			})
 			return
 		}
 	}
@@ -58,6 +52,10 @@ func (s BookingService) BookSeats(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
+	}
+
+	for _, seatID := range bookSeatsRequest.SeatIDs {
+		s.seatLockService.UnlockSeat(uint(value), seatID)
 	}
 
 	bookingDto := dto.BookingDto{

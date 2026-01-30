@@ -30,7 +30,13 @@ export default function SeatPage() {
                                                                   seat_ids: seatIds,
                                                                 }
                                 )
+      const expiryIn = res.data.expires_in;
+      const expiryTime = Date.now() + expiryIn * 1000;
+      console.log(expiryTime , expiryIn)
+      localStorage.setItem("seat_lock_expiry", expiryTime);
+
       navigate(`/trips/${tripId}/bookingdetails`);
+
     } catch (error) {
       alert(error.response?.data?.error || "One or more selected seats are no longer available");
     }   

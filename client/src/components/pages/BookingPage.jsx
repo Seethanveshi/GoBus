@@ -7,13 +7,41 @@ import { tripDetails } from '../../store/TripSlice';
 import BookingSummary from '../booking/BookingSummary';
 import { clearSelectedSeats } from '../../store/SeatSlice';
 import "../../styles/BookingPage.css"
+import useCountDown from '../../hooks/useCountDown';
+import CountdownTimer from '../countdownTimer/CountdownTimer';
 
 function BookingPage() {
     const { tripId } = useParams();
     const trip = useSelector((state) => state.trip.trip)
+    const selectedSeats = useSelector((state) => state.seats.selectedSeats);
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+    const [travellers, setTravellers] = useState({});
+    const [contactDetails, setContactDetails] = useState({
+        phone: "",
+        email: "",
+    });
+
+    const expiryTime = Number(localStorage.getItem("seat_lock_expiry") || 0);
+    const timeLeft = useCountDown(expiryTime);
+    console.log("booking page ",expiryTime, timeLeft)
+
+    useEffect(() => {
+        if (!expiryTime || timeLeft === null) return;
+
+        if(timeLeft === 0){
+            alert("Seat lock expired. Please select seats again")
+            localStorage.removeItem("seat_lock_expiry")
+            navigate(`/trips/${tripId}/seats`, { replace: true });
+        }
+    }, [timeLeft, navigate])
+
+    const safeTimeLeft = Math.max(timeLeft || 0, 0);
+    const minutes = Math.floor((safeTimeLeft / 1000) / 60);
+    const seconds = Math.floor((safeTimeLeft / 1000) % 60);
+
+    const totalAmount = selectedSeats.length * (trip.price || 0);
 
     useEffect(() => {
         const fetchTrip = async () => {
@@ -32,21 +60,23 @@ function BookingPage() {
     }, [tripId, dispatch])
 
 
-    const selectedSeats = useSelector((state) => state.seats.selectedSeats)
+    useEffect(() => {
+        return () => {
+            if (selectedSeats.length === 0) return;
 
-    const [travellers, setTravellers] = useState({});
-    const [contactDetails, setContactDetails] = useState({
-        phone: "",
-        email: "",
-    });
+            const seatIds = selectedSeats.map(s => s.seat_id);
+            api.post(`/trips/${tripId}/seats/unlock`, {
+            seat_ids: seatIds,
+            }).catch(() => {});
+        };
+    }, [selectedSeats, tripId]);
 
-    const totalAmount = selectedSeats.length * (trip.price || 0);
-
-    if (loading) {
-        return <div className="loading">Loading trip details...</div>
-    }
-    
     const handleConfirmBooking = async () => {
+        if (Date.now() > expiryTime) {
+            alert("Seat lock expired");
+            return;
+        }
+
         for (const seat of selectedSeats) {
             const t = travellers[seat.seat_id];
             if (!t?.name || !t?.age || !t?.gender) {
@@ -84,28 +114,41 @@ function BookingPage() {
         }
     };
 
+    if (loading) {
+        return <div className="loading">Loading trip details...</div>
+    }
+
     return (
       <div className="booking-layout">
-      <div className="left">
-        <TravellerPage
-          trip={trip}
-          selectedSeats={selectedSeats}
-          travellers={travellers}
-          setTravellers={setTravellers}
-          contactDetails={contactDetails}
-          setContactDetails={setContactDetails}
-          handleConfirmBooking={handleConfirmBooking}
-        />
-      </div>
+        <div className="lock-timer-wrapper">
+            <CountdownTimer 
+                minutes={minutes} 
+                seconds={seconds} 
+                expiryTime={expiryTime} 
+                currentSeconds={Math.floor(timeLeft / 1000)}
+            />
+        </div>
 
-      <div className="right">
-        <BookingSummary
-          trip={trip}
-          selectedSeats={selectedSeats}
-          totalAmount={totalAmount}
-        />
+        <div className="left">
+            <TravellerPage
+            trip={trip}
+            selectedSeats={selectedSeats}
+            travellers={travellers}
+            setTravellers={setTravellers}
+            contactDetails={contactDetails}
+            setContactDetails={setContactDetails}
+            handleConfirmBooking={handleConfirmBooking}
+            />
+        </div>
+
+        <div className="right">
+            <BookingSummary
+            trip={trip}
+            selectedSeats={selectedSeats}
+            totalAmount={totalAmount}
+            />
+        </div>
       </div>
-    </div>
     )
 }
 

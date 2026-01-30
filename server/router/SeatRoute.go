@@ -17,4 +17,5 @@ func SeatRoute(r *gin.Engine) {
 	secured.Use(middleware.AuthRequired())
 
 	secured.POST("/trips/:tripID/seats/lock", seatLockService.LockSeatsRequest)
+	secured.POST("/trips/:tripID/seats/unlock", seatLockService.UnlockSeats)
 }
