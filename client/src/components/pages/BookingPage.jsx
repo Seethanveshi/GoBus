@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import TravellerPage from '../booking/TravellerPage';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -22,10 +22,10 @@ function BookingPage() {
         phone: "",
         email: "",
     });
+    const didStrictModeCleanup = useRef(false);
 
     const expiryTime = Number(localStorage.getItem("seat_lock_expiry") || 0);
     const timeLeft = useCountDown(expiryTime);
-    console.log("booking page ",expiryTime, timeLeft)
 
     useEffect(() => {
         if (!expiryTime || timeLeft === null) return;
@@ -61,22 +61,24 @@ function BookingPage() {
 
 
     useEffect(() => {
+
         return () => {
+            if (!didStrictModeCleanup.current) {
+                didStrictModeCleanup.current = true;
+                return;
+            }
+
             if (selectedSeats.length === 0) return;
 
+            console.log("executed unlock seats")
             const seatIds = selectedSeats.map(s => s.seat_id);
             api.post(`/trips/${tripId}/seats/unlock`, {
             seat_ids: seatIds,
             }).catch(() => {});
         };
-    }, [selectedSeats, tripId]);
+    }, []);
 
     const handleConfirmBooking = async () => {
-        if (Date.now() > expiryTime) {
-            alert("Seat lock expired");
-            return;
-        }
-
         for (const seat of selectedSeats) {
             const t = travellers[seat.seat_id];
             if (!t?.name || !t?.age || !t?.gender) {
@@ -106,6 +108,7 @@ function BookingPage() {
         } 
         catch (err) {
             if (err.response) {
+                console.log("Executed")
                 alert(err.response.data.error);
             } 
             else {

@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 type SeatLockService struct{}
@@ -16,7 +18,42 @@ func NewSeatLockService() *SeatLockService {
 	return &SeatLockService{}
 }
 
-const seatLockTTL = 30 * time.Second
+const seatLockTTL = 1 * time.Minute
+
+func (s *SeatLockService) GetLockedSeats(c *gin.Context) {
+	userID := c.MustGet("user_id").(uint)
+	tripID, _ := strconv.ParseUint(c.Param("tripID"), 10, 64)
+
+	pattern := fmt.Sprintf("seat_lock:%d:*", tripID)
+
+	keys, err := database.RedisClient.Keys(database.Ctx, pattern).Result()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch lock seats"})
+		return
+	}
+
+	type LockedSeats struct {
+		SeatID uint `json:"seat_id"`
+		Owned  bool `json:"owned"`
+	}
+
+	var lockedSeats []LockedSeats
+
+	for _, key := range keys {
+		parts := strings.Split(key, ":")
+		seatID, _ := strconv.ParseUint(parts[2], 10, 64)
+
+		val, _ := database.RedisClient.Get(database.Ctx, key).Result()
+		owned := val == strconv.Itoa(int(userID))
+
+		lockedSeats = append(lockedSeats, LockedSeats{
+			SeatID: uint(seatID),
+			Owned:  owned,
+		})
+	}
+
+	c.JSON(http.StatusOK, lockedSeats)
+}
 
 func (s *SeatLockService) LockSeats(tripID uint, seatIDs []uint, userID uint) error {
 	lockedSeats := []string{}
@@ -71,7 +108,7 @@ func (s *SeatLockService) LockSeatsRequest(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message":    "seats locked",
-		"expires_in": 20,
+		"expires_in": 60,
 	})
 }
 
@@ -83,8 +120,11 @@ func (s *SeatLockService) VerifySeatLock(
 	key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
 
 	val, err := database.RedisClient.Get(database.Ctx, key).Result()
-	if err != nil {
+	fmt.Println(err, redis.Nil)
+	if err == redis.Nil {
 		return fmt.Errorf("seat lock expired")
+	} else if err != nil {
+		return fmt.Errorf("failed to verify seat lock: %v", err)
 	}
 
 	if val != strconv.Itoa(int(userID)) {
@@ -119,6 +159,5 @@ func (s *SeatLockService) UnlockSeats(c *gin.Context) {
 			s.UnlockSeat(uint(tripID), seatID)
 		}
 	}
-
 	c.JSON(http.StatusOK, gin.H{"message": "seats unlocked"})
 }

@@ -1,18 +1,26 @@
 import React from "react";
 
-function Seat({ seat, isSelected, onClick }) {
+function Seat({lockedSeatMap, seat, isSelected, onClick }) {
+  const lockStatus = lockedSeatMap[seat.seat_id];
+
+  const isLocked = lockStatus === "locked";
+  const isOwned = lockStatus === "owned";
+
   let bg = "#ccc"; 
   if (seat.available) bg = "#4caf50"; 
+  if (isLocked) bg = "#ccc";
+  if (isOwned || isLocked) bg = "#ff9800";
   if (isSelected) bg = "#2196f3"; 
 
   const handleClick = () => {
-    if (!seat.available) return
+    if (!seat.available || isLocked) return
     onClick()
   }
 
   return (
     <div
       onClick={handleClick}
+      disabled={isLocked}
       style={{
         width: 45,
         height: 45,
@@ -21,7 +29,7 @@ function Seat({ seat, isSelected, onClick }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        cursor: seat.available ? "pointer" : "not-allowed",
+        cursor: (seat.available && !isLocked) ? "pointer" : "not-allowed",
         color: "#fff",
         fontWeight: "bold",
       }}

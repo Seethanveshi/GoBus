@@ -22,7 +22,7 @@ function Signup() {
                                                 "password" : password,    
                                             }
                             )
-            navigate("/auth/login")
+            navigate("/auth/login", {replace: true})
         } catch (error) {
             console.error(error)
             alert("SignUp failed")

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { replace, useNavigate, useParams } from "react-router-dom";
 import SeatLayout from "../../components/seat/SeatLayout"
 import { useSelector, useDispatch } from "react-redux";
 import { clearSelectedSeats, fetchSeats, toggleSeat } from "../../store/SeatSlice";
@@ -32,7 +32,6 @@ export default function SeatPage() {
                                 )
       const expiryIn = res.data.expires_in;
       const expiryTime = Date.now() + expiryIn * 1000;
-      console.log(expiryTime , expiryIn)
       localStorage.setItem("seat_lock_expiry", expiryTime);
 
       navigate(`/trips/${tripId}/bookingdetails`);
