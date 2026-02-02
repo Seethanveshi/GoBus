@@ -19,4 +19,5 @@ func SeatRoute(r *gin.Engine) {
 	secured.POST("/trips/:tripID/seats/lock", seatLockService.LockSeatsRequest)
 	secured.POST("/trips/:tripID/seats/unlock", seatLockService.UnlockSeats)
 	secured.GET("/trips/:tripID/seats/locked", seatLockService.GetLockedSeats)
+	secured.POST("/trips/:tripID/seats/auto-select", seatService.AutoSelectSeat)
 }

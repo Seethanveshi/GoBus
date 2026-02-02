@@ -70,8 +70,17 @@ func (s *AuthService) Login(c *gin.Context) {
 		return
 	}
 
+	c.SetCookie(
+		"token",
+		token,
+		3600,
+		"/",
+		"",
+		true,
+		true,
+	)
+
 	c.JSON(http.StatusOK, dto.AuthResponse{
-		Token: token,
 		User: dto.UserResponse{
 			ID:       user.ID,
 			UserName: user.UserName,
@@ -79,4 +88,17 @@ func (s *AuthService) Login(c *gin.Context) {
 			Role:     user.Role,
 		},
 	})
+}
+
+func (s *AuthService) Logout(c *gin.Context) {
+	c.SetCookie(
+		"token",
+		"",
+		-1,
+		"/",
+		"",
+		true,
+		true,
+	)
+	c.JSON(http.StatusOK, gin.H{"message": "Logged out"})
 }

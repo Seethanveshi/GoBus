@@ -1,20 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/BookingPage.css"
+import { useSelector } from "react-redux";
 
-function TravellerPage({ trip, selectedSeats, travellers, setTravellers, contactDetails, setContactDetails, handleConfirmBooking }) {
+function TravellerPage({travellers, setTravellers, contactDetails, setContactDetails, handleConfirmBooking }) {
+  const trip = useSelector((state) => state.trip.trip);
+  const selectedSeats = useSelector((state) => state.seats.selectedSeats)
+  const autoSeatSelectInfo = useSelector((state) => state.seats.autoSeatSelect)
+  const autoSeatSelectDataInfo = useSelector((state) => state.seats.autoSeatSelectData)
+  
+  const [autoSeatSelect, setAutoSeatSelect] = useState(false)
+
+  useEffect(() => {
+    setAutoSeatSelect(autoSeatSelectInfo)
+  }, [autoSeatSelectInfo, autoSeatSelectDataInfo])
+
   const handleTravellerChange = (seatId, field, value) => {
+    setTravellers((prev) => ({
+      ...prev,
+      [seatId]: {
+        ...prev[seatId],
+        [field]: value,
+      },
+    }));
+  };
 
-  setTravellers((prev) => ({
-    ...prev,
-    [seatId]: {
-      ...prev[seatId],
-      [field]: value,
-    },
-  }));
-
-  // const date = trip?.travel_date ? new Date(trip.travel_date) : null;
-
-};
   return (
     <div className="traveller-page-container">
       <div className="booking-section-card">
@@ -29,7 +38,7 @@ function TravellerPage({ trip, selectedSeats, travellers, setTravellers, contact
         <h2>Traveller Details</h2>
         {selectedSeats.map((seat) => (
           <div key={seat.seat_id} className="seat-form-row">
-            <h4>Seat Number: {seat.seat_number}</h4>
+            {autoSeatSelect ? null : <h4>Seat Number: {seat.seat_number}</h4>}
             <div className="contact-inputs">
               <input 
                 className="booking-input" 
@@ -68,7 +77,7 @@ function TravellerPage({ trip, selectedSeats, travellers, setTravellers, contact
             onChange={(e) => setContactDetails({ ...contactDetails, email: e.target.value })} 
           />
         </div>
-      </div>
+      </div>                                                                                                                                                                                                                                                                        
 
       <button onClick={handleConfirmBooking} className="confirm-btn">
         Confirm Booking

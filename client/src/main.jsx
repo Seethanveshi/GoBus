@@ -21,12 +21,8 @@ const router = createBrowserRouter(
         <Route path='/auth/signup' element={<Signup />} />
         <Route path='/trips' element={<SearchResultPage />} />
         <Route path='/trips/:tripId/seats' element={<SeatPage />} />
-        <Route path="/trips/:tripId/bookingdetails" element={<PrivateRoute>
-                                                                  <BookingPage />
-                                                              </PrivateRoute>} />
-        <Route path="/bookings/history" element={<PrivateRoute>
-                                                    <BookingHistoryPage />
-                                                </PrivateRoute>} />
+        <Route path="/trips/:tripId/bookingdetails" element={<BookingPage />} />
+        <Route path="/bookings/history" element={<BookingHistoryPage />} />
     </Route>
   )
 )

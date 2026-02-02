@@ -60,19 +60,13 @@ func (s *SeatLockService) LockSeats(tripID uint, seatIDs []uint, userID uint) er
 
 	for _, seatID := range seatIDs {
 		key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
+		existingUserID, err := database.RedisClient.Get(database.Ctx, key).Result()
 
-		ok, err := database.RedisClient.SetNX(
-			database.Ctx,
-			key,
-			userID,
-			seatLockTTL,
-		).Result()
+		if err == nil {
+			if existingUserID == fmt.Sprint(userID) {
+				continue
+			}
 
-		if err != nil {
-			return err
-		}
-
-		if !ok {
 			for _, k := range lockedSeats {
 				database.RedisClient.Del(database.Ctx, k)
 			}
@@ -80,7 +74,27 @@ func (s *SeatLockService) LockSeats(tripID uint, seatIDs []uint, userID uint) er
 			return fmt.Errorf("one or more seats already locked")
 		}
 
-		lockedSeats = append(lockedSeats, key)
+		if err == redis.Nil {
+			ok, err := database.RedisClient.SetNX(
+				database.Ctx,
+				key,
+				userID,
+				seatLockTTL,
+			).Result()
+
+			if err != nil {
+				return err
+			}
+
+			if !ok {
+				return fmt.Errorf("failed to lock seat")
+			}
+
+			lockedSeats = append(lockedSeats, key)
+			continue
+		}
+
+		return err
 	}
 
 	return nil
@@ -160,4 +174,11 @@ func (s *SeatLockService) UnlockSeats(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "seats unlocked"})
+}
+
+func (s *SeatLockService) IsSeatLocked(tripID uint, seatID uint) bool {
+	key := fmt.Sprintf("seat_lock:%d:%d", tripID, seatID)
+	exists, _ := database.RedisClient.Exists(database.Ctx, key).Result()
+	return exists == 1
+
 }

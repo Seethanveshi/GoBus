@@ -9,7 +9,7 @@ function Seat({lockedSeatMap, seat, isSelected, onClick }) {
   let bg = "#ccc"; 
   if (seat.available) bg = "#4caf50"; 
   if (isLocked) bg = "#ccc";
-  if (isOwned || isLocked) bg = "#ff9800";
+  if (isLocked  || isOwned) bg = "#ff9800";
   if (isSelected) bg = "#2196f3"; 
 
   const handleClick = () => {
@@ -29,7 +29,7 @@ function Seat({lockedSeatMap, seat, isSelected, onClick }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        cursor: (seat.available && !isLocked) ? "pointer" : "not-allowed",
+        cursor: (seat.available && (!isLocked)) ? "pointer" : "not-allowed",
         color: "#fff",
         fontWeight: "bold",
       }}

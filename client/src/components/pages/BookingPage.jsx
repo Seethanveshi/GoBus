@@ -3,28 +3,26 @@ import { useDispatch, useSelector } from 'react-redux'
 import TravellerPage from '../booking/TravellerPage';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/axios';
-import { tripDetails } from '../../store/TripSlice';
 import BookingSummary from '../booking/BookingSummary';
-import { clearSelectedSeats } from '../../store/SeatSlice';
+import { clearAutoSeatSelectData, clearSelectedSeats } from '../../store/SeatSlice';
 import "../../styles/BookingPage.css"
 import useCountDown from '../../hooks/useCountDown';
 import CountdownTimer from '../countdownTimer/CountdownTimer';
 
 function BookingPage() {
     const { tripId } = useParams();
-    const trip = useSelector((state) => state.trip.trip)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const didStrictModeCleanup = useRef(false);
     const selectedSeats = useSelector((state) => state.seats.selectedSeats);
-    const dispatch = useDispatch()
-    const [loading, setLoading] = useState(true)
-    const navigate = useNavigate()
     const [travellers, setTravellers] = useState({});
     const [contactDetails, setContactDetails] = useState({
         phone: "",
         email: "",
     });
-    const didStrictModeCleanup = useRef(false);
-
-    const expiryTime = Number(localStorage.getItem("seat_lock_expiry") || 0);
+    const [totalAmount, setTotalAmount] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const expiryTime = Number(sessionStorage.getItem("seat_lock_expiry") || 0);
     const timeLeft = useCountDown(expiryTime);
 
     useEffect(() => {
@@ -32,7 +30,7 @@ function BookingPage() {
 
         if(timeLeft === 0){
             alert("Seat lock expired. Please select seats again")
-            localStorage.removeItem("seat_lock_expiry")
+            sessionStorage.removeItem("seat_lock_expiry")
             navigate(`/trips/${tripId}/seats`, { replace: true });
         }
     }, [timeLeft, navigate])
@@ -41,32 +39,15 @@ function BookingPage() {
     const minutes = Math.floor((safeTimeLeft / 1000) / 60);
     const seconds = Math.floor((safeTimeLeft / 1000) % 60);
 
-    const totalAmount = selectedSeats.length * (trip.price || 0);
 
     useEffect(() => {
-        const fetchTrip = async () => {
-            try {
-                setLoading(true);
-                const res = await api.get(`trips/${tripId}`)
-                const data = res.data
-                dispatch(tripDetails(data))
-            } catch (err) {
-                console.error('Failed to fetch trip:', err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchTrip()
-    }, [tripId, dispatch])
-
-
-    useEffect(() => {
-
         return () => {
             if (!didStrictModeCleanup.current) {
                 didStrictModeCleanup.current = true;
                 return;
             }
+            dispatch(clearAutoSeatSelectData())
+            dispatch(clearSelectedSeats())
 
             if (selectedSeats.length === 0) return;
 
@@ -96,7 +77,7 @@ function BookingPage() {
             seatIds: selectedSeats.map((s) => s.seat_id),
             travellers,
             contact: contactDetails,
-            total_amount: totalAmount
+            total_amount: totalAmount-discount
         };
     
         try {
@@ -116,11 +97,7 @@ function BookingPage() {
             }
         }
     };
-
-    if (loading) {
-        return <div className="loading">Loading trip details...</div>
-    }
-
+    
     return (
       <div className="booking-layout">
         <div className="lock-timer-wrapper">
@@ -134,8 +111,6 @@ function BookingPage() {
 
         <div className="left">
             <TravellerPage
-            trip={trip}
-            selectedSeats={selectedSeats}
             travellers={travellers}
             setTravellers={setTravellers}
             contactDetails={contactDetails}
@@ -145,10 +120,11 @@ function BookingPage() {
         </div>
 
         <div className="right">
-            <BookingSummary
-            trip={trip}
-            selectedSeats={selectedSeats}
-            totalAmount={totalAmount}
+            <BookingSummary 
+                totalAmount = {totalAmount}
+                setTotalAmount = {setTotalAmount}
+                discount = {discount}
+                setDiscount = {setDiscount}
             />
         </div>
       </div>

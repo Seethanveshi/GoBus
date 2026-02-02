@@ -8,7 +8,7 @@ function BookingHistoryCard({booking}) {
         <h3 className="route-text">
           {booking.source} → {booking.destination}
         </h3>
-        <span className="price-tag">₹{booking.total_amount}</span>
+        <span className="price-tag">₹{(booking.total_amount).toLocaleString()}</span>
       </div>
 
       <div className="card-body">

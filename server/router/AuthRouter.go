@@ -12,4 +12,5 @@ func AuthRouter(r *gin.Engine) {
 	auth := r.Group("/auth")
 	auth.POST("/signup", authService.Register)
 	auth.POST("/login", authService.Login)
+	auth.POST("/logout", authService.Logout)
 }

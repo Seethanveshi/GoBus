@@ -14,6 +14,8 @@ const seatSlice = createSlice({
     initialState : {
         seats : [],
         selectedSeats : [],
+        autoSeatSelect : false,
+        autoSeatSelectData : {},
         loading : false,
         error : null
     },
@@ -30,12 +32,29 @@ const seatSlice = createSlice({
                 );
             }
             else{
-                state.selectedSeats.push(seat)
+                if (state.selectedSeats.length >= 5){
+                    alert("You are not allow to select more than five seats")
+                }
+                else {
+                    console.log("pushed");
+                    state.selectedSeats.push(seat)
+                }
             }
         },
-        clearSelectedSeats(state){
+        toggleAutoSeatSelect(state, action) {
+            console.log(action.payload)
+            const autoSelect = action.payload.autoSeatSelect
+            const autoSelectData = action.payload.autoSeatSelectData
+            state.autoSeatSelect = autoSelect
+            state.autoSeatSelectData = autoSelectData
+        },
+        clearSelectedSeats(state) {
             state.selectedSeats = [];
         },
+        clearAutoSeatSelectData(state) {
+            state.autoSeatSelect = false
+            state.autoSeatSelectData = {}
+        }
     },
     extraReducers : (builder) => {
         builder
@@ -53,5 +72,5 @@ const seatSlice = createSlice({
     },
 });
 
-export const {toggleSeat, clearSelectedSeats} = seatSlice.actions;
+export const {toggleSeat, clearSelectedSeats, toggleAutoSeatSelect, clearAutoSeatSelectData} = seatSlice.actions;
 export default seatSlice.reducer;

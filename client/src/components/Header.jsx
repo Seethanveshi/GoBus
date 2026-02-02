@@ -4,13 +4,15 @@ import { Menu, X, HelpCircle, User, ChevronDown } from "lucide-react";
 import { NavLink, useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/AuthSlice';
+import api from '../api/axios';
 
 function Header() {
     const user = useSelector((state) => state.auth.user)
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
-    const handleLogout = () => {
+    const handleLogout = async() => {
+        await api.post("/auth/logout")
         dispatch(logout())
         navigate("/auth/login")
     }
