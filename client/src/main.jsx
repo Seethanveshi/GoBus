@@ -2,16 +2,15 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, createRoutesFromElements, Route, Router, RouterProvider } from 'react-router-dom'
 import MainLayout from './MainLayout.jsx'
-import SearchResultPage from './components/SearchResultPage.jsx'
 import SearchForm from './components/searchForm/SearchForm.jsx'
 import SeatPage from './components/pages/SeatPage.jsx'
 import { store } from './store/Store.js'
 import { Provider } from "react-redux"
 import BookingPage from './components/pages/BookingPage.jsx'
 import BookingHistoryPage from './components/pages/BookingHistoryPage.jsx'
-import PrivateRoute from './components/routes/PrivateRoute.jsx'
 import Login from './components/auth/Login.jsx'
 import Signup from './components/auth/Signup.jsx'
+import SearchResultPage from './components/pages/SearchResultPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(

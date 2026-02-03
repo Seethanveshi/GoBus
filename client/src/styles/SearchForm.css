@@ -1,9 +1,15 @@
 .search-form-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 40px;
   background-color: #f7f7f7;
   margin-top: 70px;
+  height: 35vh;
+  background-image: url("../assets/GoBusBackgroudImage.png");
+  background-position: center 95%;
+  background-size:cover;
+  background-repeat: no-repeat;
 }
 
 .search-container {

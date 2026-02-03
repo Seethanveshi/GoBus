@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import SearchForm from './searchForm/SearchForm'
-import api from '../api/axios'
-import BusList from './bus/BusList'
-import '../styles/SearchForm.css'
+import BusList from '../bus/BusList'
+import "../../styles/SearchForm.css";
 import { useNavigate, useSearchParams } from 'react-router'
+import SearchForm from '../searchForm/SearchForm'
+import api from '../../api/axios'
 
 function SearchResultPage() {
   
